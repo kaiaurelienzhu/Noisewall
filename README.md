@@ -2,7 +2,7 @@
 
 # Noisewall
 
-The Noisewall function.
+A Hypar function for automating the modelling of basic post and panel noisewalls
 
 |Input Name|Type|Description|
 |---|---|---|
