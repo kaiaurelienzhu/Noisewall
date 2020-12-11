@@ -1,0 +1,70 @@
+{
+  "$schema": "https://hypar.io/Schemas/Function.json",
+  "id": "0c209d12-f5a0-4f93-b488-cd15bc86e877",
+  "name": "Noisewall",
+  "description": "The Noisewall function.",
+  "language": "C#",
+  "model_dependencies": [],
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "Noisewall Setout Centres": {
+        "multipleOf": 0.1,
+        "default": 1,
+        "description": "The Length.",
+        "maximum": 10,
+        "step": 0.1,
+        "type": "number",
+        "$hyparUnitType": "length",
+        "$hyparOrder": 0,
+        "minimum": 0.1
+      },
+      "Tolerance Gap": {
+        "multipleOf": 0.01,
+        "description": "The Width.",
+        "maximum": 1,
+        "step": 0.01,
+        "type": "number",
+        "$hyparUnitType": "length",
+        "$hyparOrder": 1,
+        "minimum": 0.05
+      },
+      "Noisewall panel height": {
+        "multipleOf": 0.1,
+        "default": 2,
+        "maximum": 10,
+        "description": "The height of the panel in m",
+        "type": "number",
+        "$hyparOrder": 3,
+        "minimum": 0.1
+      },
+      "Noisewall panel depth": {
+        "multipleOf": 0.1,
+        "default": 50,
+        "maximum": 0.5,
+        "description": "The depth of panel",
+        "type": "number",
+        "$hyparOrder": 4,
+        "minimum": 0.1
+      },
+      "Setout Curve": {
+        "description": "Setout polyline curve which will be converted into a Bezier",
+        "default": null,
+        "type": "object",
+        "$hyparOrder": 2,
+        "$ref": "https://hypar.io/Schemas/Geometry/Polyline.json"
+      }
+    }
+  },
+  "outputs": [
+    {
+      "unit_type": "none",
+      "name": "Panel Count",
+      "description": "The number of noisewall panels",
+      "type": "number"
+    }
+  ],
+  "repository_url": "https://github.com/hypar-io/function",
+  "source_file_key": null,
+  "preview_image": null
+}
