@@ -64,13 +64,13 @@ namespace Noisewall
 
                 // Model Beams 
                 var line = new Line(lineStartPoint, new Vector3(lineStartPoint.X, lineStartPoint.Y, panelHeight));
-                var linearBeam = new Beam(line, profile, BuiltInMaterials.Steel,0,0,45);
+                var linearBeam = new Beam(line, profile, BuiltInMaterials.Steel,0,0,0);
                 beams.Add(linearBeam);
                 var lineT = line.TransformAt(0).ToModelCurves(linearBeam.Transform);
 
                 // Model Walls
                 var randomColour = new Color(rand.NextDouble(), rand.NextDouble(), rand.NextDouble(), 1.0);
-                walls.Add(new StandardWall(noisewallCentreline, panelDepth, panelHeight , new Material(randomColour, 0, 0, false, null, false, Guid.NewGuid(), randomcolour.ToString())));
+                walls.Add(new StandardWall(noisewallCentreline, panelDepth, panelHeight , new Material(randomColour, 0, 0, false, null, false, Guid.NewGuid(), randomColour.ToString())));
 
             }
 
