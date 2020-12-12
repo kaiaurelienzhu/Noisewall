@@ -62,15 +62,16 @@ namespace Noisewall
                 Vector3 lineDirectionUnitVector = (lineEndPoint - lineStartPoint).Unitized();
                 var noisewallCentreline = new Line(lineStartPoint + lineDirectionUnitVector * toleranceGap, lineEndPoint - lineDirectionUnitVector * toleranceGap);
 
-                // Define beam linework
+                /// Define beam linework
                 var line = new Line(lineStartPoint, new Vector3(lineStartPoint.X, lineStartPoint.Y, panelHeight));
                 var linearBeam = new Beam(line, profile, BuiltInMaterials.Steel,0,0,45);
+
+                /// Add Beams
+                beams.Add(linearBeam);
                 var lineT = line.TransformAt(0).ToModelCurves(linearBeam.Transform);
-
-
                 var colour = new Color(rand.NextDouble(), rand.NextDouble(), rand.NextDouble(), 1.0);
                 walls.Add(new StandardWall(noisewallCentreline, panelDepth, panelHeight , new Material(colour, 0, 0, false, null, false, Guid.NewGuid(), colour.ToString())));
-                beams.Add(linearBeam);
+
             }
 
             // Create output object and add parameters
