@@ -73,11 +73,10 @@ namespace Noisewall
                 beams.Add(linearBeam);
             }
 
-            
+            // Create output object and add parameters
             var output = new NoisewallOutputs(walls.Count);
 
             // Add elements to output display
-            
             output.Model.AddElement(bezierModelCurve);
             output.Model.AddElements(walls);
             output.Model.AddElements(beams);
