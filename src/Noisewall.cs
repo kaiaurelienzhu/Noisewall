@@ -19,7 +19,6 @@ namespace Noisewall
         public static NoisewallOutputs Execute(Dictionary<string, Model> inputModels, NoisewallInputs input)
         {
             // Setup inputs
-
             var panelCentres = input.NoisewallSetoutCentres;
             var toleranceGap = input.ToleranceGap;
             var panelHeight = input.NoisewallPanelHeight;
@@ -27,31 +26,29 @@ namespace Noisewall
             var panelWidth = panelCentres - toleranceGap;
             var setoutPolylineCrv = input.SetoutCurve;
 
+            // Model smooth setout crv
             var verts = setoutPolylineCrv.Vertices as List<Vector3>;
             var bezier = new Bezier(verts);
             var bezierModelCurve = new ModelCurve(bezier, new Material("Green", Colors.Green));
 
-            // Experiment with Grid1d hypar elements
+            // Divide curve
             var grid = new Grid1d(bezier);
-
-            // Divide the grid into sections of length 10 and leave remainders at both ends
             grid.DivideByFixedLength(panelCentres, FixedDivisionMode.RemainderAtBothEnds);
-
-
-            // Retrieve all bottom-level cells
             var cells = grid.GetCells();
-
-            // Get lines representing each cell
             var lines = cells.Select(c => c.GetCellGeometry()).OfType<Line>();
 
-            // Create walls from lines, and assign a random colour material
             List<Wall> walls = new List<Wall>();
             List<Beam> beams = new List<Beam>();
-            var rand = new Random();
+
             
             // Create Beam profile
             var profile = WideFlangeProfileServer.Instance.GetProfileByType(WideFlangeProfileType.W10x100);
             
+            // Model original Beam
+            Line line = new Line(Vector3.Origin, new Vector3(0,0,panelHeight));
+            List<Beam> linearBeams = new List<Beam>();
+
+
             
             foreach (var setoutLine in lines)
             {
@@ -62,15 +59,19 @@ namespace Noisewall
                 Vector3 lineDirectionUnitVector = (lineEndPoint - lineStartPoint).Unitized();
                 var noisewallCentreline = new Line(lineStartPoint + lineDirectionUnitVector * toleranceGap, lineEndPoint - lineDirectionUnitVector * toleranceGap);
 
-                // Model Beams 
-                var line = new Line(lineStartPoint, new Vector3(lineStartPoint.X, lineStartPoint.Y, panelHeight));
-                var linearBeam = new Beam(line, profile, BuiltInMaterials.Steel,0,0,0);
+                // Create beam transforms
+                Transform perpFrame = setoutLine.TransformAt(0);
+                Transform centreSetoutPlane = setoutLine.TransformAt(0.5);
+                Transform orientBeams = new Transform(setoutLine.Start, perpFrame.ZAxis, perpFrame.YAxis);
+
+                // Model Beams
+                var linearBeam = new Beam(line, profile, BuiltInMaterials.Steel,0,0,0, orientBeams);
                 beams.Add(linearBeam);
-                var lineT = line.TransformAt(0).ToModelCurves(linearBeam.Transform);
 
                 // Model Walls
-                var randomColour = new Color(rand.NextDouble(), rand.NextDouble(), rand.NextDouble(), 1.0);
-                walls.Add(new StandardWall(noisewallCentreline, panelDepth, panelHeight , new Material(randomColour, 0, 0, false, null, false, Guid.NewGuid(), randomColour.ToString())));
+                Material lightConcrete = new Material("Light Concrete", Colors.White, 0.1, 0.0);
+                StandardWall wall = new StandardWall(noisewallCentreline, panelDepth, panelHeight, lightConcrete);
+                walls.Add(wall);
 
             }
 
@@ -81,6 +82,7 @@ namespace Noisewall
             output.Model.AddElement(bezierModelCurve);
             output.Model.AddElements(walls);
             output.Model.AddElements(beams);
+
             return output;
                 
         }
