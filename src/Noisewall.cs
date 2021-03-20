@@ -98,6 +98,7 @@ namespace Noisewall
                 wallHeight = randomWallHeights.ElementAt(increment);
                 //  Factor in tolerance Gap using vector math
                 // panelHeight = remappedHeights.ElementAt(increment);
+                wallHeight = input.NoisewallPanelHeight;
                 
 
                 var noisewallLength = wallCentres - toleranceGap * 2;
