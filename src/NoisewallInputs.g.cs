@@ -6,7 +6,6 @@ using Elements;
 using Elements.GeoJSON;
 using Elements.Geometry;
 using Elements.Geometry.Solids;
-using Elements.Properties;
 using Elements.Validators;
 using Elements.Serialization.JSON;
 using Hypar.Functions;
@@ -73,15 +72,6 @@ namespace Noisewall
         /// <summary>Setout polyline curve which will be converted into a Bezier</summary>
         [Newtonsoft.Json.JsonProperty("Setout Curve", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Polyline SetoutCurve { get; set; }
-    
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
     
     
     }

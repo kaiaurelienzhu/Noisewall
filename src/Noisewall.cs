@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Elements.Geometry.Profiles;
 
+
 namespace Noisewall
 {
       public static class Noisewall
@@ -19,11 +20,11 @@ namespace Noisewall
         public static NoisewallOutputs Execute(Dictionary<string, Model> inputModels, NoisewallInputs input)
         {
             // Setup inputs
-            var panelCentres = input.NoisewallSetoutCentres;
+            var wallCentres = input.NoisewallSetoutCentres;
             var toleranceGap = input.ToleranceGap;
-            var panelHeight = input.NoisewallPanelHeight;
-            var panelDepth = input.NoisewallPanelDepth;
-            var panelWidth = panelCentres - toleranceGap;
+            double wallHeight = input.NoisewallPanelHeight;
+            var wallDepth = input.NoisewallPanelDepth;
+            var wallWidth = wallCentres - toleranceGap;
             var setoutPolylineCrv = input.SetoutCurve;
 
             // Model smooth setout crv
@@ -33,9 +34,10 @@ namespace Noisewall
 
             // Divide curve
             var grid = new Grid1d(bezier);
-            grid.DivideByFixedLength(panelCentres, FixedDivisionMode.RemainderAtBothEnds);
+            grid.DivideByFixedLength(wallCentres, FixedDivisionMode.RemainderAtBothEnds);
             var cells = grid.GetCells();
             var lines = cells.Select(c => c.GetCellGeometry()).OfType<Line>();
+            int numWalls = lines.Count();
 
             List<Wall> walls = new List<Wall>();
             List<Beam> beams = new List<Beam>();
@@ -44,22 +46,67 @@ namespace Noisewall
             // Create Beam profile
             var profile = WideFlangeProfileServer.Instance.GetProfileByType(WideFlangeProfileType.W10x100);
             
-            // Model original Beam
-            Line line = new Line(Vector3.Origin, new Vector3(0,0,panelHeight));
+            // Model beam at origin
+            Line line = new Line(Vector3.Origin, new Vector3(0,0,wallHeight));
             List<Beam> linearBeams = new List<Beam>();
+
+            // Create range between 0 and 2pi with nDivisions
+            List<double> normalisedRange = new List<double>();
+            double max = 2 * Math.PI;
+            double min = 0;
+            int nDivisions = numWalls;
+            double diff = (max - min)/nDivisions;
+            double d = min;
+            foreach(int i in Enumerable.Range(0, nDivisions - 1))
+            {
+                d = d + diff;
+                normalisedRange.Add(min + d);
+            }
+
+
+            // Setup random heights within range
+            int wallMinHeight = 6;
+            int wallMaxHeight = 9;
+            Random rand = new Random();
+            List<int> randomWallHeights = new List<int>();
+            foreach(int i in Enumerable.Range(0, numWalls))
+            {
+                randomWallHeights.Add(rand.Next(wallMinHeight, wallMaxHeight));
+            }
 
 
             
+            // // Base sin wave function parameters
+            // List<double> normalisedHeights = new List<double>();
+            // foreach (double number in normalisedRange)
+            // {
+            //     normalisedHeights.Add(Math.Sin(number));
+            // }
+
+            // // Remap heights
+            // List<double> remappedHeights = new List<double>();
+            // foreach (double number in normalisedHeights)
+            // {
+            //     remappedHeights.Add(Remap(number, min, max, wallMinHeight, wallMaxHeight));
+            // }
+
+
+            int increment = 0;
             foreach (var setoutLine in lines)
             {
+                // Set wall 
+                wallHeight = randomWallHeights.ElementAt(increment);
                 //  Factor in tolerance Gap using vector math
-                var noisewallLength = panelCentres - toleranceGap * 2;
+                // panelHeight = remappedHeights.ElementAt(increment);
+                
+
+                var noisewallLength = wallCentres - toleranceGap * 2;
                 Vector3 lineStartPoint = setoutLine.Start;
                 Vector3 lineEndPoint = setoutLine.End;
                 Vector3 lineDirectionUnitVector = (lineEndPoint - lineStartPoint).Unitized();
                 var noisewallCentreline = new Line(lineStartPoint + lineDirectionUnitVector * toleranceGap, lineEndPoint - lineDirectionUnitVector * toleranceGap);
 
-                // Create beam transforms
+                // Create beam transforms 
                 Transform perpFrame = setoutLine.TransformAt(0);
                 Transform centreSetoutPlane = setoutLine.TransformAt(0.5);
                 Transform orientBeams = new Transform(setoutLine.Start, perpFrame.ZAxis, perpFrame.YAxis);
@@ -70,9 +117,9 @@ namespace Noisewall
 
                 // Model Walls
                 Material lightConcrete = new Material("Light Concrete", Colors.White, 0.1, 0.0);
-                StandardWall wall = new StandardWall(noisewallCentreline, panelDepth, panelHeight, lightConcrete);
+                StandardWall wall = new StandardWall(noisewallCentreline, wallDepth, wallHeight, lightConcrete);
                 walls.Add(wall);
-
+                increment ++;
             }
 
             // Create output object and add parameters
@@ -86,5 +133,13 @@ namespace Noisewall
             return output;
                 
         }
+
+
+        public static double Remap(double x, double from1, double from2, double to1, double to2)
+        {
+            return to2 + (x - from1) * (to2 - from1)/(from2 - from1);
+        }
+        
     }
+    
 }
