@@ -11,6 +11,7 @@ The Noisewall function.
 |Noisewall panel height|number|The height of the panel in m|
 |Noisewall panel depth|number|The depth of panel|
 |Setout Curve|https://hypar.io/Schemas/Geometry/Polyline.json|Setout polyline curve which will be converted into a Bezier|
+|Colour|https://hypar.io/Schemas/Geometry/Color.json|A color with red, green, blue, and alpha components.|
 
 
 <br>

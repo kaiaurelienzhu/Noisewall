@@ -28,13 +28,13 @@ namespace Noisewall
     {
         [Newtonsoft.Json.JsonConstructor]
         
-        public NoisewallInputs(double @noisewallSetoutCentres, double @toleranceGap, double @noisewallPanelHeight, double @noisewallPanelDepth, Polyline @setoutCurve, string bucketName, string uploadsBucket, Dictionary<string, string> modelInputKeys, string gltfKey, string elementsKey, string ifcKey):
+        public NoisewallInputs(double @noisewallSetoutCentres, double @toleranceGap, double @noisewallPanelHeight, double @noisewallPanelDepth, Polyline @setoutCurve, Color @colour, string bucketName, string uploadsBucket, Dictionary<string, string> modelInputKeys, string gltfKey, string elementsKey, string ifcKey):
         base(bucketName, uploadsBucket, modelInputKeys, gltfKey, elementsKey, ifcKey)
         {
             var validator = Validator.Instance.GetFirstValidatorForType<NoisewallInputs>();
             if(validator != null)
             {
-                validator.PreConstruct(new object[]{ @noisewallSetoutCentres, @toleranceGap, @noisewallPanelHeight, @noisewallPanelDepth, @setoutCurve});
+                validator.PreConstruct(new object[]{ @noisewallSetoutCentres, @toleranceGap, @noisewallPanelHeight, @noisewallPanelDepth, @setoutCurve, @colour});
             }
         
             this.NoisewallSetoutCentres = @noisewallSetoutCentres;
@@ -42,6 +42,7 @@ namespace Noisewall
             this.NoisewallPanelHeight = @noisewallPanelHeight;
             this.NoisewallPanelDepth = @noisewallPanelDepth;
             this.SetoutCurve = @setoutCurve;
+            this.Colour = @colour;
         
             if(validator != null)
             {
@@ -72,6 +73,10 @@ namespace Noisewall
         /// <summary>Setout polyline curve which will be converted into a Bezier</summary>
         [Newtonsoft.Json.JsonProperty("Setout Curve", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Polyline SetoutCurve { get; set; }
+    
+        /// <summary>A color with red, green, blue, and alpha components.</summary>
+        [Newtonsoft.Json.JsonProperty("Colour", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Color Colour { get; set; }
     
     
     }

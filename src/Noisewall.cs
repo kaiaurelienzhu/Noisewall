@@ -26,6 +26,9 @@ namespace Noisewall
             var wallDepth = input.NoisewallPanelDepth;
             var wallWidth = wallCentres - toleranceGap;
             var setoutPolylineCrv = input.SetoutCurve;
+            var color = input.Color;
+
+
 
             // Model smooth setout crv
             var verts = setoutPolylineCrv.Vertices as List<Vector3>;

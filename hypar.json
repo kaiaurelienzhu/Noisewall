@@ -44,7 +44,7 @@
         "maximum": 0.5,
         "description": "The depth of panel",
         "type": "number",
-        "$hyparOrder": 4,
+        "$hyparOrder": 5,
         "minimum": 0.1
       },
       "Setout Curve": {
@@ -53,6 +53,17 @@
         "type": "object",
         "$hyparOrder": 2,
         "$ref": "https://hypar.io/Schemas/Geometry/Polyline.json"
+      },
+      "Colour": {
+        "description": "A color with red, green, blue, and alpha components.",
+        "default": {
+          "Red": 0.5882352941176471,
+          "Alpha": 1,
+          "Blue": 0.5882352941176471,
+          "Green": 0.5882352941176471
+        },
+        "$hyparOrder": 4,
+        "$ref": "https://hypar.io/Schemas/Geometry/Color.json"
       }
     }
   },
