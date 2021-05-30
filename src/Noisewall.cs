@@ -26,7 +26,7 @@ namespace Noisewall
             var wallDepth = input.NoisewallPanelDepth;
             var wallWidth = wallCentres - toleranceGap;
             var setoutPolylineCrv = input.SetoutCurve;
-            var color = input.Color;
+            var colour = input.Colour;
 
 
 
@@ -120,7 +120,7 @@ namespace Noisewall
                 beams.Add(linearBeam);
 
                 // Model Walls
-                Material lightConcrete = new Material("Light Concrete", Colors.White, 0.1, 0.0);
+                Material lightConcrete = new Material("Light Concrete", colour, 0.1, 0.0);
                 StandardWall wall = new StandardWall(noisewallCentreline, wallDepth, wallHeight, lightConcrete);
                 walls.Add(wall);
                 increment ++;
